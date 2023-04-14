@@ -6,7 +6,7 @@
     <section id="feed-posts">
         <h4>Posts</h4>
         <% if (locals.user) { %>
-            <form action="/post/create" id="new-post-form" method="POST">
+            <form action="/posts/create" id="new-post-form" method="POST">
                 <textarea name="content" id="" cols="30" rows="3" placeholder="Type here..." required></textarea>
                 <input type="submit" value="submit">
             </form>
@@ -17,6 +17,11 @@
                 <% for (post of posts) { %>
                     <li>
                         <p>
+                            <% if (locals.user && locals.user.id == post.user.id) { %>
+                                <small>
+                                    <a href="/posts/destroy/<%= post.id %>">X</a>
+                                </small> 
+                            <% } %>
                             <%= post.content %><br>
                             <small><%= post.user.name %></small>
                         </p>
