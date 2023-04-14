@@ -1,10 +1,30 @@
 
 const User = require('../models/user');
 
-module.exports.profile = function(req, res) {
-    return res.render('user_profile', {
-        title: 'user profile'
-    });
+module.exports.profile = async function(req, res) {
+    try {
+        const user = await User.findById(req.params.id);
+        return res.render('user_profile', {
+            title: 'user profile',
+            profile_user: user
+        });
+    }catch (err) {
+        console.log('error while finding the user --> users__controller ', err);
+    }
+}
+
+module.exports.update = async function(req, res) {
+    if (req.user.id == req.params.id) {
+        try {
+            await User.findByIdAndUpdate(req.params.id, req.body);
+            return res.redirect('back');
+        }
+        catch (err) {
+            console.log('error while updating the user --> users_controller ', err);
+        }
+    } else {
+        return res.status(401).send('Unauthorized');
+    }
 }
 
 // render the sign up page
