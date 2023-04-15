@@ -6,15 +6,16 @@ const User = require('../models/user');
 
 // authentication using passport
 passport.use(new LocalStragey({
-        usernameField: 'email'
-    }, async function(email, password, done) {
+        usernameField: 'email',
+        passReqToCallback: true
+    }, async function(req, email, password, done) {
         // find a user and establish the identity
         try {
             const user = await User.findOne({email: email});
 
             // user is not found or password doesn't match
             if (!user || user.password != password) {
-                console.log('Invalid Username / Password');
+                req.flash('error', 'Invalid Username/Password');
                 return done(null, false);
             }
 
@@ -22,7 +23,7 @@ passport.use(new LocalStragey({
             return done(null, user);
         }
         catch (err) {
-            console.log('Error in finding user ----> Passport');
+            req.flash('error', err);
             return done(err);
         }
     }
